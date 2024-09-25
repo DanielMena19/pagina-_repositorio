@@ -6,35 +6,38 @@ body {
   padding: 0;
   text-align: center;
   color: #34495e;
+  min-height: 100vh; /* Asegura que el contenido ocupe toda la altura de la pantalla */
+  display: flex;
+  flex-direction: column; /* Flexbox para organizar elementos verticalmente */
 }
 
 /* Drawer Lateral */
 .drawer {
-  height: 100%; /* Altura completa */
-  width: 0; /* Comienza cerrado */
-  position: fixed; /* Fijo en la página */
-  z-index: 1; /* Por encima del contenido */
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
   top: 0;
-  left: 0; /* Se abre desde la izquierda */
-  background-color: #3498db; /* Fondo claro igual que el fondo del cuerpo */
-  overflow-x: hidden; /* Esconde el desbordamiento lateral */
-  transition: 0.5s; /* Transición suave */
-  padding-top: 60px; /* Espacio en la parte superior */
-  text-align: left; /* Alinear el contenido del drawer a la izquierda */
-  font-family: 'Comic Sans MS', cursive, sans-serif; /* Mismo estilo de fuente que el header */
+  left: 0;
+  background-color: #3498db;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+  text-align: left;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
 }
 
 .drawer a {
-  padding: 8px 8px 8px 32px; /* Padding a la izquierda */
+  padding: 8px 8px 8px 32px;
   text-decoration: none;
-  font-size: 20px; /* Tamaño de fuente ajustado */
-  color: #ffffff; /* Color blanco para los enlaces */
+  font-size: 20px;
+  color: #ffffff;
   display: block;
   transition: 0.3s;
 }
 
 .drawer a:hover {
-  color: #2c3e50; /* Color oscuro en hover */
+  color: #2c3e50;
 }
 
 .drawer .closebtn {
@@ -42,20 +45,18 @@ body {
   top: 0;
   right: 25px;
   font-size: 36px;
-  color: #ffffff; /* Mismo color de los títulos */
+  color: #ffffff;
 }
 
-/* Botón de abrir el drawer (el ícono de menú) */
 #menu-icon {
   position: absolute;
   top: 20px;
   left: 20px;
   font-size: 30px;
   cursor: pointer;
-  color: #3498db; /* Color del menú de apertura igual que el texto */
+  color: #3498db;
 }
 
-/* Estilos para los iconos dentro del drawer */
 .drawer-icon {
   width: 24px;
   height: 24px;
@@ -63,12 +64,10 @@ body {
   vertical-align: middle;
 }
 
-/* Abrir el drawer al 250px */
 .drawer.open {
   width: 250px;
 }
 
-/* Estilos de la página de inicio */
 header h1 {
   font-size: 24px;
   color: #3498db;
@@ -87,22 +86,22 @@ header h1 {
   margin: 20px auto;
   max-width: 300px;
   position: relative;
-  overflow: hidden; /* Esconde el contenido que desborda del área visible */
+  overflow: hidden;
 }
 
 .carousel-container {
   display: flex;
-  transition: transform 0.5s ease-in-out; /* Agregar transición para el deslizamiento suave */
+  transition: transform 0.5s ease-in-out;
 }
 
 .carousel-slide {
-  flex: 0 0 100%; /* Cada slide ocupa el 100% del ancho del carrusel */
+  flex: 0 0 100%;
   max-width: 100%;
 }
 
 .carousel-slide img {
   width: 100%;
-  height: auto; /* Ajustar la altura automáticamente para que las imágenes mantengan su relación de aspecto */
+  height: auto;
   border-radius: 10px;
 }
 
@@ -125,7 +124,6 @@ header h1 {
   background-color: #3498db;
 }
 
-/* Redes sociales */
 .social-media {
   margin: 30px auto;
 }
@@ -158,7 +156,11 @@ footer {
   background-color: #f0f8ff;
   font-size: 14px;
   color: #7f8c8d;
-  margin-top: 30px;
+  width: 100%;
+  position: fixed; /* Fijo en la parte inferior de la pantalla */
+  bottom: 0; /* Siempre en la parte inferior */
+  left: 0;
+  margin-top: auto; /* Empuja el footer hacia el fondo */
 }
 
 /* Contenedor de Servicios */
@@ -172,7 +174,7 @@ footer {
 
 /* Estilos del formulario de Servicios */
 .services-form {
-  flex: 1; /* Ocupa la mitad izquierda */
+  flex: 1;
   padding: 20px;
 }
 
@@ -218,10 +220,10 @@ form button:hover {
 
 /* Lista de servicios */
 .service-list {
-  flex: 1; /* Ocupa la mitad derecha */
+  flex: 1;
   padding: 20px;
-  max-height: 500px; /* Altura máxima de la lista de servicios */
-  overflow-y: scroll; /* Permitir el desplazamiento vertical solo dentro de la lista */
+  max-height: 500px;
+  overflow-y: scroll;
 }
 
 .service-item {

@@ -36,12 +36,15 @@ if (document.getElementById('loginForm')) {
   });
 }
 
-// --- Lógica del Carrusel ---
-if (document.querySelectorAll('.carousel-slide').length > 0) {
+// --- Función para inicializar el Carrusel ---
+function initCarousel() {
   let currentSlide = 0;
   const slides = document.querySelectorAll('.carousel-slide');
   const dots = document.querySelectorAll('.dot');
   const totalSlides = slides.length;
+
+  // Si no hay diapositivas, salir de la función
+  if (totalSlides === 0) return;
 
   // Función para mostrar una diapositiva específica
   function showSlide(index) {
@@ -77,7 +80,6 @@ if (document.querySelectorAll('.carousel-slide').length > 0) {
   showSlide(currentSlide);
 }
 
-
 // --- Lógica del Drawer ---
 function openDrawer() {
   document.getElementById('myDrawer').classList.add('open');
@@ -87,8 +89,16 @@ function closeDrawer() {
   document.getElementById('myDrawer').classList.remove('open');
 }
 
+// --- Función para cambiar el título del encabezado ---
+function updateHeaderTitle(title) {
+  const headerTitle = document.querySelector('header h1');
+  headerTitle.textContent = title;
+}
+
 // Lógica para volver al inicio
 document.getElementById('homeBtn').addEventListener('click', function() {
+  updateHeaderTitle('Bienvenido a App-ointment'); // Cambiar el título del encabezado a "Inicio"
+  
   document.getElementById('dynamic-content').innerHTML = `
     <section class="description">
       <p>Nuestra misión es ofrecer servicios excepcionales para ayudarte a alcanzar tus metas. Creemos en la calidad, la innovación y la dedicación en cada proyecto.</p>
@@ -122,11 +132,21 @@ document.getElementById('homeBtn').addEventListener('click', function() {
       </div>
     </section>
   `;
+
+  // Inicializar el carrusel al volver al inicio
+  initCarousel();
   closeDrawer();
+});
+
+// --- Inicializar carrusel al cargar la página inicialmente ---
+window.addEventListener('DOMContentLoaded', () => {
+  initCarousel();
 });
 
 // Función para mostrar la pantalla de servicios
 document.getElementById('servicesBtn').addEventListener('click', async function() {
+  updateHeaderTitle('Administración de Servicios'); // Cambiar el título del encabezado a "Servicios"
+
   document.getElementById('dynamic-content').innerHTML = `
     <div class="services-container">
       <!-- Formulario de servicios en el lado izquierdo -->
@@ -160,13 +180,11 @@ document.getElementById('servicesBtn').addEventListener('click', async function(
   let isEdit = false;
   let editServiceId = null;
 
-  // Función para obtener todos los servicios de la API y mostrarlos
   async function obtenerServicios() {
     try {
       const response = await fetch('http://localhost:3000/servicios');
       const servicios = await response.json();
       
-      // Mostrar los servicios en la interfaz
       const serviceListContainer = document.getElementById('serviceListContainer');
       serviceListContainer.innerHTML = '';  // Limpiar el contenedor antes de agregar los servicios
 
@@ -187,12 +205,11 @@ document.getElementById('servicesBtn').addEventListener('click', async function(
           <p>Descripción: ${servicio.descripcionServ || 'Sin descripción'}</p>
           <p>Fecha de Registro: ${fechaFormateada}</p>
           <div class="service-actions">
-            <i class="fas fa-edit" data-id="${servicio.idServ}"></i> <!-- Icono de editar -->
-            <i class="fas fa-trash" data-id="${servicio.idServ}"></i> <!-- Icono de eliminar -->
+            <i class="fas fa-edit" data-id="${servicio.idServ}"></i>
+            <i class="fas fa-trash" data-id="${servicio.idServ}"></i>
           </div>
         `;
 
-        // Funcionalidad para eliminar servicio
         serviceItem.querySelector('.fa-trash').addEventListener('click', async function() {
           const serviceId = this.getAttribute('data-id');
           if (confirm('¿Estás seguro de que quieres eliminar este servicio?')) {
@@ -212,7 +229,6 @@ document.getElementById('servicesBtn').addEventListener('click', async function(
           }
         });
 
-        // Funcionalidad para editar servicio
         serviceItem.querySelector('.fa-edit').addEventListener('click', function() {
           const serviceId = this.getAttribute('data-id');
           const nombreServ = servicio.nombreServ;
@@ -220,13 +236,11 @@ document.getElementById('servicesBtn').addEventListener('click', async function(
           const duracionServ = servicio.duracionServ;
           const precioServ = servicio.precioServ;
 
-          // Llenar el formulario con los datos del servicio
           document.getElementById('serviceName').value = nombreServ;
           document.getElementById('serviceDescription').value = descripcionServ;
           document.getElementById('serviceDuration').value = duracionServ;
           document.getElementById('servicePrice').value = precioServ;
 
-          // Cambiar el título del formulario, el texto del botón, y el estado de edición
           document.getElementById('formTitle').textContent = 'Editar Servicio';
           document.getElementById('submitButton').textContent = 'Actualizar Servicio';
           isEdit = true;
@@ -240,10 +254,8 @@ document.getElementById('servicesBtn').addEventListener('click', async function(
     }
   }
 
-  // Llamar a la función para obtener los servicios al cargar la pantalla de servicios
   obtenerServicios();
 
-  // Funcionalidad para agregar o actualizar un servicio
   document.getElementById('serviceForm').addEventListener('submit', async function(event) {
     event.preventDefault();
 
@@ -256,7 +268,6 @@ document.getElementById('servicesBtn').addEventListener('click', async function(
 
     try {
       if (isEdit) {
-        // Actualizar el servicio existente
         const response = await fetch(`http://localhost:3000/servicios/${editServiceId}`, {
           method: 'PUT',
           headers: {
@@ -266,17 +277,16 @@ document.getElementById('servicesBtn').addEventListener('click', async function(
         });
 
         if (response.ok) {
-          document.getElementById('formTitle').textContent = 'Agregar Servicio';  // Restablecer el título del formulario
-          document.getElementById('submitButton').textContent = 'Agregar Servicio';  // Restablecer el texto del botón
-          isEdit = false;  // Salir del modo de edición
+          document.getElementById('formTitle').textContent = 'Agregar Servicio';
+          document.getElementById('submitButton').textContent = 'Agregar Servicio';
+          isEdit = false;
           editServiceId = null;
-          document.getElementById('serviceForm').reset();  // Limpiar el formulario
-          obtenerServicios();  // Refrescar la lista de servicios
+          document.getElementById('serviceForm').reset();
+          obtenerServicios();
         } else {
           console.error('Error al actualizar el servicio:', await response.json());
         }
       } else {
-        // Agregar un nuevo servicio
         const response = await fetch('http://localhost:3000/servicios', {
           method: 'POST',
           headers: {
@@ -286,8 +296,8 @@ document.getElementById('servicesBtn').addEventListener('click', async function(
         });
 
         if (response.ok) {
-          document.getElementById('serviceForm').reset();  // Limpiar el formulario
-          obtenerServicios();  // Refrescar la lista de servicios
+          document.getElementById('serviceForm').reset();
+          obtenerServicios();
         } else {
           console.error('Error al crear el servicio:', await response.json());
         }
@@ -303,10 +313,7 @@ document.getElementById('servicesBtn').addEventListener('click', async function(
 // Función para cerrar sesión
 if (document.getElementById('logoutBtn')) {
   document.getElementById('logoutBtn').addEventListener('click', function() {
-    // Eliminar el token de localStorage
     localStorage.removeItem('token');
-    
-    // Redirigir al usuario a la página de login
     window.location.href = '/login';
   });
-}
+};
