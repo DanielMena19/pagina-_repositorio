@@ -18,10 +18,13 @@
   <!-- Drawer lateral -->
   <div id="myDrawer" class="drawer">
     <a href="javascript:void(0)" class="closebtn" onclick="closeDrawer()">&times;</a>
-    <a href="/inicio">
+    <a href="javascript:void(0)" id="homeBtn">
       <i class="bi bi-house-door drawer-icon"></i> Inicio
     </a>
-    <a href="#" id="logoutBtn">
+    <a href="javascript:void(0)" id="servicesBtn">
+      <i class="bi bi-gear drawer-icon"></i> Servicios
+    </a>
+    <a href="javascript:void(0)" id="logoutBtn">
       <i class="bi bi-box-arrow-right drawer-icon"></i> Cerrar sesión
     </a>
   </div>
@@ -31,42 +34,44 @@
     <h1>Bienvenido a App-ointment</h1>
   </header>
 
-  <!-- Descripción -->
-  <section class="description">
-    <p>Nuestra misión es ofrecer servicios excepcionales para ayudarte a alcanzar tus metas. Creemos en la calidad, la innovación y la dedicación en cada proyecto.</p>
-  </section>
+  <!-- Contenedor donde se va a cambiar el contenido dinámico -->
+  <div id="dynamic-content">
+    <!-- Descripción inicial -->
+    <section class="description">
+      <p>Nuestra misión es ofrecer servicios excepcionales para ayudarte a alcanzar tus metas. Creemos en la calidad, la innovación y la dedicación en cada proyecto.</p>
+    </section>
 
-  <!-- Carrusel de imágenes -->
-  <section class="carousel">
-    <div class="carousel-container">
-      <div class="carousel-slide active">
-        <img src="/images/carro1.jpg" alt="Imagen 1">
+    <!-- Carrusel de imágenes -->
+    <section class="carousel">
+      <div class="carousel-container">
+        <div class="carousel-slide active">
+          <img src="/images/carro1.jpg" alt="Imagen 1">
+        </div>
+        <div class="carousel-slide">
+          <img src="/images/carro2.jpg" alt="Imagen 2">
+        </div>
+        <div class="carousel-slide">
+          <img src="/images/carro3.jpg" alt="Imagen 3">
+        </div>
       </div>
-      <div class="carousel-slide">
-        <img src="/images/carro2.jpg" alt="Imagen 2">
+      <!-- Indicadores del carrusel -->
+      <div class="carousel-indicators">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
       </div>
-      <div class="carousel-slide">
-        <img src="/images/carro3.jpg" alt="Imagen 3">
-      </div>
-    </div>
-    <!-- Indicadores del carrusel -->
-    <div class="carousel-indicators">
-      <span class="dot active"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-    </div>
-  </section>
+    </section>
 
-  <!-- Redes sociales -->
-  <section class="social-media">
-    <h3>Síguenos en nuestras redes sociales:</h3>
-    <div class="social-icons">
-      <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
-      <a href="#"><i class="fab fa-facebook"></i> Facebook</a>
-      <a href="#"><i class="fab fa-twitter"></i> Twitter</a>
-    </div>
-  </section>
+    <!-- Redes sociales -->
+    <section class="social-media">
+      <h3>Síguenos en nuestras redes sociales:</h3>
+      <div class="social-icons">
+        <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
+        <a href="#"><i class="fab fa-facebook"></i> Facebook</a>
+        <a href="#"><i class="fab fa-twitter"></i> Twitter</a>
+      </div>
+    </section>
+  </div>
 
   <!-- Pie de página -->
   <footer>

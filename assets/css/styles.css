@@ -1,6 +1,6 @@
 /* Estilos globales */
 body {
-  font-family: 'Arial', sans-serif;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
   background-color: #e3f7ff;
   margin: 0;
   padding: 0;
@@ -28,7 +28,7 @@ body {
   padding: 8px 8px 8px 32px; /* Padding a la izquierda */
   text-decoration: none;
   font-size: 20px; /* Tamaño de fuente ajustado */
-  color: #ffffff; /* Color azul claro igual que los títulos */
+  color: #ffffff; /* Color blanco para los enlaces */
   display: block;
   transition: 0.3s;
 }
@@ -159,4 +159,99 @@ footer {
   font-size: 14px;
   color: #7f8c8d;
   margin-top: 30px;
+}
+
+/* Contenedor de Servicios */
+.services-container {
+  display: flex;
+  justify-content: space-around;
+  margin: 30px auto;
+  padding: 20px;
+  max-width: 1200px;
+}
+
+/* Estilos del formulario de Servicios */
+.services-form {
+  flex: 1; /* Ocupa la mitad izquierda */
+  padding: 20px;
+}
+
+form {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  margin: 20px auto;
+}
+
+form label {
+  display: block;
+  font-size: 16px;
+  color: #34495e;
+  margin-bottom: 10px;
+}
+
+form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+form button {
+  width: 100%;
+  background-color: #3498db;
+  color: #ffffff;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #2980b9;
+}
+
+/* Lista de servicios */
+.service-list {
+  flex: 1; /* Ocupa la mitad derecha */
+  padding: 20px;
+  max-height: 500px; /* Altura máxima de la lista de servicios */
+  overflow-y: scroll; /* Permitir el desplazamiento vertical solo dentro de la lista */
+}
+
+.service-item {
+  background-color: #ffffff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.service-item h4 {
+  color: #3498db;
+}
+
+.service-item p {
+  color: #34495e;
+  font-size: 14px;
+}
+
+.service-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.service-actions i {
+  color: #3498db;
+  cursor: pointer;
+}
+
+.service-actions i:hover {
+  color: #2980b9;
 }
