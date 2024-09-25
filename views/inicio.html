@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inicio</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css"> <!-- Bootstrap Icons -->
+</head>
+<body>
+
+  <!-- Botón para abrir el drawer -->
+  <div id="menu-icon" onclick="openDrawer()">
+    <i class="fas fa-bars"></i>
+  </div>
+
+  <!-- Drawer lateral -->
+  <div id="myDrawer" class="drawer">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeDrawer()">&times;</a>
+    <a href="/inicio">
+      <i class="bi bi-house-door drawer-icon"></i> Inicio
+    </a>
+    <a href="#" id="logoutBtn">
+      <i class="bi bi-box-arrow-right drawer-icon"></i> Cerrar sesión
+    </a>
+  </div>
+
+  <!-- Contenido principal -->
+  <header>
+    <h1>Bienvenido a App-ointment</h1>
+  </header>
+
+  <!-- Descripción -->
+  <section class="description">
+    <p>Nuestra misión es ofrecer servicios excepcionales para ayudarte a alcanzar tus metas. Creemos en la calidad, la innovación y la dedicación en cada proyecto.</p>
+  </section>
+
+  <!-- Carrusel de imágenes -->
+  <section class="carousel">
+    <div class="carousel-container">
+      <div class="carousel-slide active">
+        <img src="/images/carro1.jpg" alt="Imagen 1">
+      </div>
+      <div class="carousel-slide">
+        <img src="/images/carro2.jpg" alt="Imagen 2">
+      </div>
+      <div class="carousel-slide">
+        <img src="/images/carro3.jpg" alt="Imagen 3">
+      </div>
+    </div>
+    <!-- Indicadores del carrusel -->
+    <div class="carousel-indicators">
+      <span class="dot active"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+  </section>
+
+  <!-- Redes sociales -->
+  <section class="social-media">
+    <h3>Síguenos en nuestras redes sociales:</h3>
+    <div class="social-icons">
+      <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
+      <a href="#"><i class="fab fa-facebook"></i> Facebook</a>
+      <a href="#"><i class="fab fa-twitter"></i> Twitter</a>
+    </div>
+  </section>
+
+  <!-- Pie de página -->
+  <footer>
+    <p>Appointment App &copy; 2024 – Todos los derechos reservados</p>
+  </footer>
+
+  <script src="/js/main.js"></script> <!-- Archivo JavaScript -->
+</body>
+</html>

@@ -1,0 +1,66 @@
+/* Estilos globales */
+body {
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  background-color: #e3f7ff; /* Mismo fondo claro que el inicio */
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-container {
+  width: 320px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center; /* Alinear el texto al centro */
+}
+
+h2 {
+  font-size: 24px;
+  color: #3498db; /* Mismo color azul que el inicio */
+  margin-bottom: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-size: 16px;
+  color: #34495e; /* Texto en un azul más oscuro */
+  margin-top: 10px;
+}
+
+input {
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+button {
+  margin-top: 20px;
+  background-color: #3498db; /* Mismo azul que los botones del inicio */
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #2980b9; /* Un azul más oscuro al pasar el cursor */
+}
+
+#message {
+  margin-top: 15px;
+  color: #e74c3c; /* Color rojo para los mensajes de error */
+  font-size: 14px;
+}

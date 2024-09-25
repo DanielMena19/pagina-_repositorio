@@ -1,0 +1,14 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "Servidor del frontend para servir los archivos HTML, CSS y JS",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"  
+  },
+  "dependencies": {
+    "express": "^4.17.1"      
+  },
+  "author": "Gerardo",
+  "license": "ISC"
+}

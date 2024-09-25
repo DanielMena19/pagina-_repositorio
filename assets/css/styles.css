@@ -1,0 +1,162 @@
+/* Estilos globales */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #e3f7ff;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  color: #34495e;
+}
+
+/* Drawer Lateral */
+.drawer {
+  height: 100%; /* Altura completa */
+  width: 0; /* Comienza cerrado */
+  position: fixed; /* Fijo en la página */
+  z-index: 1; /* Por encima del contenido */
+  top: 0;
+  left: 0; /* Se abre desde la izquierda */
+  background-color: #3498db; /* Fondo claro igual que el fondo del cuerpo */
+  overflow-x: hidden; /* Esconde el desbordamiento lateral */
+  transition: 0.5s; /* Transición suave */
+  padding-top: 60px; /* Espacio en la parte superior */
+  text-align: left; /* Alinear el contenido del drawer a la izquierda */
+  font-family: 'Comic Sans MS', cursive, sans-serif; /* Mismo estilo de fuente que el header */
+}
+
+.drawer a {
+  padding: 8px 8px 8px 32px; /* Padding a la izquierda */
+  text-decoration: none;
+  font-size: 20px; /* Tamaño de fuente ajustado */
+  color: #ffffff; /* Color azul claro igual que los títulos */
+  display: block;
+  transition: 0.3s;
+}
+
+.drawer a:hover {
+  color: #2c3e50; /* Color oscuro en hover */
+}
+
+.drawer .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  color: #ffffff; /* Mismo color de los títulos */
+}
+
+/* Botón de abrir el drawer (el ícono de menú) */
+#menu-icon {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 30px;
+  cursor: pointer;
+  color: #3498db; /* Color del menú de apertura igual que el texto */
+}
+
+/* Estilos para los iconos dentro del drawer */
+.drawer-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+/* Abrir el drawer al 250px */
+.drawer.open {
+  width: 250px;
+}
+
+/* Estilos de la página de inicio */
+header h1 {
+  font-size: 24px;
+  color: #3498db;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+.description {
+  margin: 20px auto;
+  max-width: 600px;
+  font-size: 16px;
+  color: #34495e;
+}
+
+/* Carrusel */
+.carousel {
+  margin: 20px auto;
+  max-width: 300px;
+  position: relative;
+  overflow: hidden; /* Esconde el contenido que desborda del área visible */
+}
+
+.carousel-container {
+  display: flex;
+  transition: transform 0.5s ease-in-out; /* Agregar transición para el deslizamiento suave */
+}
+
+.carousel-slide {
+  flex: 0 0 100%; /* Cada slide ocupa el 100% del ancho del carrusel */
+  max-width: 100%;
+}
+
+.carousel-slide img {
+  width: 100%;
+  height: auto; /* Ajustar la altura automáticamente para que las imágenes mantengan su relación de aspecto */
+  border-radius: 10px;
+}
+
+.carousel-indicators {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin: 5px;
+  background-color: #bbb;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.dot.active {
+  background-color: #3498db;
+}
+
+/* Redes sociales */
+.social-media {
+  margin: 30px auto;
+}
+
+.social-media h3 {
+  font-size: 18px;
+  color: #34495e;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.social-icons a {
+  text-decoration: none;
+  color: #34495e;
+  font-size: 18px;
+}
+
+.social-icons a i {
+  margin-right: 10px;
+  font-size: 24px;
+}
+
+/* Pie de página */
+footer {
+  padding: 20px;
+  background-color: #f0f8ff;
+  font-size: 14px;
+  color: #7f8c8d;
+  margin-top: 30px;
+}

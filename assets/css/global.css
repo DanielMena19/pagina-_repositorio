@@ -1,0 +1,22 @@
+/* Definir colores globales */
+:root {
+  --main-bg-color: #e3f7ff;  /* Fondo principal */
+  --text-color: #34495e;     /* Color de texto principal */
+  --primary-color: #3498db;  /* Color primario (botones, links, etc.) */
+  --secondary-color: #7f8c8d;/* Color secundario (footer, etc.) */
+}
+
+/* Estilos generales */
+body {
+  background-color: var(--main-bg-color);
+  color: var(--text-color);
+}
+
+a {
+  color: var(--primary-color);
+}
+
+button {
+  background-color: var(--primary-color);
+  color: white;
+}
