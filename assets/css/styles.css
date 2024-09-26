@@ -257,3 +257,36 @@ form button:hover {
 .service-actions i:hover {
   color: #2980b9;
 }
+
+/*estilo botones de rol*/
+.role-selection {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
+}
+
+.role-option {
+  text-align: center;
+  cursor: pointer;
+  border: 2px solid transparent;
+  padding: 10px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.role-option img {
+  width: 60px;
+  height: 60px;
+}
+
+.role-option p {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #34495e;
+}
+
+.role-option.selected {
+  border-color: #3498db;
+  background-color: #e3f7ff;
+  box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+}
