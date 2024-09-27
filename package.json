@@ -4,10 +4,12 @@
   "description": "Servidor del frontend para servir los archivos HTML, CSS y JS",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"  
+    "start": "node app.js"
   },
   "dependencies": {
-    "express": "^4.17.1"      
+    "@fullcalendar/core": "^6.1.15",
+    "@fullcalendar/daygrid": "^6.1.15",
+    "express": "^4.17.1"
   },
   "author": "Gerardo",
   "license": "ISC"

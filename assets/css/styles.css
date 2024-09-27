@@ -290,3 +290,103 @@ form button:hover {
   background-color: #e3f7ff;
   box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
 }
+
+
+/* Estilos específicos para la pantalla de citas */
+
+.calendar-container {
+  flex: 1;
+  padding: 20px;
+  max-width: 300px;
+}
+
+.filters {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.filters select {
+  padding: 5px;
+  font-size: 14px;
+}
+
+#appointmentsList {
+  overflow-y: auto;
+  max-height: 500px;
+}
+
+.service-item {
+  background-color: #ffffff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.service-item h4 {
+  color: #3498db;
+}
+
+.service-item p {
+  color: #34495e;
+  font-size: 14px;
+}
+
+/* Estilos para los filtros */
+.filters {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px auto;
+  max-width: 1000px;
+}
+
+.filters select {
+  padding: 5px;
+  font-size: 14px;
+  border: 1px solid #3498db;
+  border-radius: 5px;
+  background-color: #e3f7ff;
+  color: #3498db;
+}
+
+/* Calendario */
+.calendar-container {
+  width: 70%;
+  margin: 0 auto;
+  margin-top: 30px;
+}
+
+/* Lista de citas */
+#appointmentsList {
+  margin: 20px auto;
+  padding: 20px;
+  max-width: 1000px;
+}
+
+.appointment-item {
+  background-color: #ffffff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.appointment-item h4 {
+  color: #3498db;
+}
+
+.appointment-item p {
+  color: #34495e;
+  font-size: 14px;
+}
+
+.appointment-item select {
+  padding: 5px;
+  font-size: 14px;
+  margin-top: 10px;
+  border: 1px solid #3498db;
+  border-radius: 5px;
+  background-color: #e3f7ff;
+  color: #3498db;
+}
