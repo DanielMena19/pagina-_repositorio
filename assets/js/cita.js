@@ -4,25 +4,21 @@ document.getElementById('appointmentsBtn').addEventListener('click', async funct
 
   // Agregar el contenido dinámico para la pantalla de citas
   document.getElementById('dynamic-content').innerHTML = `
-    <div class="services-container"> <!-- Reutilizamos 'services-container' para mantener el estilo -->
-      <!-- Calendario en el lado izquierdo -->
+    <div class="services-container">
       <div class="calendar-container">
         <div id="calendar"></div>
       </div>
 
-      <!-- Lista de citas del día en el lado derecho -->
-      <div class="service-list"> <!-- Reutilizamos 'service-list' para mantener el estilo -->
+      <div class="service-list">
         <div class="filters">
           <label for="filterEmployee">Filtrar por empleado</label>
           <select id="filterEmployee">
             <option value="">Todos los empleados</option>
-            <!-- Opciones generadas dinámicamente -->
           </select>
 
           <label for="filterService">Filtrar por servicio</label>
           <select id="filterService">
             <option value="">Todos los servicios</option>
-            <!-- Opciones generadas dinámicamente -->
           </select>
 
           <label for="filterState">Filtrar por estado</label>
@@ -32,6 +28,8 @@ document.getElementById('appointmentsBtn').addEventListener('click', async funct
             <option value="confirmada">Confirmada</option>
             <option value="cancelada">Cancelada</option>
           </select>
+
+          <button id="mostrarTodasCitas">Mostrar todas las citas</button>
         </div>
 
         <div id="appointmentsList">
@@ -52,14 +50,23 @@ document.getElementById('appointmentsBtn').addEventListener('click', async funct
       locale: 'es',
       dateClick: function(info) {
         selectedDate = info.dateStr;
-        mostrarCitasDelDia(selectedDate);
+
+        // Quitar el resaltado de los días anteriores seleccionados
+        document.querySelectorAll('.fc-daygrid-day').forEach(dayEl => {
+          dayEl.classList.remove('fc-daygrid-day-selected');
+        });
+
+        // Resaltar el día seleccionado
+        info.dayEl.classList.add('fc-daygrid-day-selected');
+
+        aplicarFiltros();
       },
       events: async function(fetchInfo, successCallback, failureCallback) {
         try {
-          const response = await fetch('http://localhost:3000/citas'); // Asegúrate de que la ruta sea correcta
+          const response = await fetch('http://localhost:3000/citas');
           citas = await response.json();
           const calendarEvents = citas.map(cita => ({
-            title: `Cita con ${cita.clienteNombre}`,
+            title: `Cita`,
             start: cita.fecha,
             allDay: true
           }));
@@ -73,18 +80,44 @@ document.getElementById('appointmentsBtn').addEventListener('click', async funct
     calendar.render();
   }
 
-  // Función para mostrar las citas del día seleccionado
-  async function mostrarCitasDelDia(date) {
-    const citasDelDia = citas.filter(cita => cita.fecha.split('T')[0] == date); // Comparamos solo la parte de la fecha
+  // Función para aplicar los filtros
+  function aplicarFiltros() {
+    const filtroEmpleado = document.getElementById('filterEmployee').value;
+    const filtroServicio = document.getElementById('filterService').value;
+    const filtroEstado = document.getElementById('filterState').value;
+
+    let citasFiltradas = citas;
+
+    if (filtroEmpleado) {
+      citasFiltradas = citasFiltradas.filter(cita => cita.empleadoNombre === filtroEmpleado);
+    }
+
+    if (filtroServicio) {
+      citasFiltradas = citasFiltradas.filter(cita => cita.servicioNombre === filtroServicio);
+    }
+
+    if (filtroEstado) {
+      citasFiltradas = citasFiltradas.filter(cita => cita.estadoCita === filtroEstado);
+    }
+
+    if (selectedDate) {
+      citasFiltradas = citasFiltradas.filter(cita => cita.fecha === selectedDate);
+    }
+
+    mostrarCitasFiltradas(citasFiltradas);
+  }
+
+  // Función para mostrar las citas filtradas
+  function mostrarCitasFiltradas(citasFiltradas) {
     const appointmentsList = document.getElementById('appointmentsList');
     appointmentsList.innerHTML = '';
 
-    if (citasDelDia.length == 0) {
-      appointmentsList.innerHTML = '<p>No hay citas para este día.</p>';
+    if (citasFiltradas.length === 0) {
+      appointmentsList.innerHTML = '<p>No hay citas para los filtros seleccionados.</p>';
     } else {
-      citasDelDia.forEach(cita => {
+      citasFiltradas.forEach(cita => {
         const citaItem = document.createElement('div');
-        citaItem.classList.add('service-item');  // Reutilizamos 'service-item' para mantener el estilo
+        citaItem.classList.add('service-item');
 
         citaItem.innerHTML = `
           <h4>${cita.clienteNombre} - ${cita.servicioNombre}</h4>
@@ -111,6 +144,12 @@ document.getElementById('appointmentsBtn').addEventListener('click', async funct
               body: JSON.stringify({ estadoCita: nuevoEstado })
             });
             if (response.ok) {
+              // Actualizar el estado de la cita en la lista de citas sin recargar
+              const citaIndex = citas.findIndex(c => c.idCita == idCita);
+              if (citaIndex !== -1) {
+                citas[citaIndex].estadoCita = nuevoEstado;
+                aplicarFiltros(); // Vuelve a aplicar los filtros para reflejar el cambio
+              }
               alert('Estado de la cita actualizado');
             } else {
               console.error('Error al actualizar el estado de la cita:', await response.json());
@@ -128,15 +167,18 @@ document.getElementById('appointmentsBtn').addEventListener('click', async funct
   // Función para obtener empleados y servicios desde la API
   async function obtenerEmpleadosYServicios() {
     try {
-      // Obtener empleados
-      const responseEmpleados = await fetch('http://localhost:3000/empleados');
+      // Obtener empleados con el rol Staff
+      const responseEmpleados = await fetch('http://localhost:3000/usuarios');
       const empleados = await responseEmpleados.json();
 
       const selectEmpleado = document.getElementById('filterEmployee');
       selectEmpleado.innerHTML = '<option value="">Todos los empleados</option>';
-      empleados.forEach(empleado => {
+
+      const empleadosStaff = empleados.filter(empleado => empleado.rol === 'Staff');
+
+      empleadosStaff.forEach(empleado => {
         const option = document.createElement('option');
-        option.value = empleado.idMySQL; // Asegúrate de usar el campo id adecuado
+        option.value = empleado.nombreUsuario;
         option.textContent = empleado.nombreUsuario;
         selectEmpleado.appendChild(option);
       });
@@ -149,7 +191,7 @@ document.getElementById('appointmentsBtn').addEventListener('click', async funct
       selectServicio.innerHTML = '<option value="">Todos los servicios</option>';
       servicios.forEach(servicio => {
         const option = document.createElement('option');
-        option.value = servicio.idServ; // Asegúrate de usar el campo id adecuado
+        option.value = servicio.nombreServ;
         option.textContent = servicio.nombreServ;
         selectServicio.appendChild(option);
       });
@@ -158,6 +200,25 @@ document.getElementById('appointmentsBtn').addEventListener('click', async funct
       console.error('Error al obtener empleados o servicios:', error);
     }
   }
+
+  // Función para restablecer los filtros
+  function resetearFiltros() {
+    document.getElementById('filterEmployee').value = '';
+    document.getElementById('filterService').value = '';
+    document.getElementById('filterState').value = '';
+    selectedDate = null;
+    mostrarCitasFiltradas(citas); // Mostrar todas las citas
+  }
+
+  // Event listeners para aplicar filtros
+  document.getElementById('filterEmployee').addEventListener('change', aplicarFiltros);
+  document.getElementById('filterService').addEventListener('change', aplicarFiltros);
+  document.getElementById('filterState').addEventListener('change', aplicarFiltros);
+
+  // Botón para mostrar todas las citas y restablecer los filtros
+  document.getElementById('mostrarTodasCitas').addEventListener('click', function() {
+    resetearFiltros();
+  });
 
   // Inicializar el calendario y obtener datos al cargar la página
   initCalendar();
