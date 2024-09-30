@@ -8,17 +8,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css"> <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet">
-
-  <!-- Verificación del inicio de sesión -->
-  <script>
-    // Verificar si hay un token en localStorage
-    const token = localStorage.getItem('token');
-    if (!token) {
-      // Si no hay token, redirigir al login
-      alert('Por favor inicia sesión para acceder.');
-      window.location.href = '/login';  // Redirigir al login
-    }
-  </script>
 </head>
 <body>
 

@@ -2,11 +2,18 @@
 document.getElementById('usersBtn').addEventListener('click', async function() {
   updateHeaderTitle('Administración de Usuarios'); // Cambiar el título del encabezado a "Usuarios"
 
+  // Obtener rol y nombre del usuario logueado desde localStorage
+  const userRole = localStorage.getItem('userRole');  
+  const userName = localStorage.getItem('userName');  // Filtrar por nombre en lugar de id
+
+  console.log('Rol del usuario:', userRole);
+  console.log('Nombre del usuario logueado:', userName);
+
   document.getElementById('dynamic-content').innerHTML = `
     <div class="services-container">
       <!-- Formulario de usuarios en el lado izquierdo -->
       <div class="services-form">
-        <h2 id="formTitle">Agregar Usuario</h2>
+        <h2 id="formTitle">Agregar Usuario</h2> <!-- Título por defecto -->
         <form id="userForm">
           <label for="userName">Nombre del Usuario (obligatorio)</label>
           <input type="text" id="userName" placeholder="Nombre del Usuario" required>
@@ -48,31 +55,59 @@ document.getElementById('usersBtn').addEventListener('click', async function() {
     </div>
   `;
 
-  let isEdit = false;
-  let editUserId = null;
+  // Cambiar el título a "Editar Usuario" si el usuario es Staff
+  if (userRole === 'Staff') {
+    document.getElementById('formTitle').textContent = 'Editar Usuario';
+    document.getElementById('submitButton').textContent = 'Actualizar Usuario';
+    document.getElementById('submitButton').disabled = true;  // Deshabilitar el botón al inicio
+  }
 
-  // Manejadores de eventos para los botones de selección de rol
+  // Asignar el rol seleccionado al formulario
   document.getElementById('adminRoleBtn').addEventListener('click', function() {
-    document.getElementById('userRole').value = 'Admin';  // Asignar el rol de Admin
+    document.getElementById('userRole').value = 'Admin';  // Asignar rol de Admin
     document.getElementById('adminRoleBtn').classList.add('selected');
     document.getElementById('staffRoleBtn').classList.remove('selected');
   });
 
   document.getElementById('staffRoleBtn').addEventListener('click', function() {
-    document.getElementById('userRole').value = 'Staff';  // Asignar el rol de Staff
+    document.getElementById('userRole').value = 'Staff';  // Asignar rol de Staff
     document.getElementById('staffRoleBtn').classList.add('selected');
     document.getElementById('adminRoleBtn').classList.remove('selected');
   });
 
+  let isEdit = false;
+  let editUserId = null;
+
   // Función para obtener usuarios desde la API
   async function obtenerUsuarios() {
     try {
+      let usuarios = [];
       const response = await fetch('http://localhost:3000/usuarios');
-      const usuarios = await response.json();
-      
-      const userListContainer = document.getElementById('userListContainer');
-      userListContainer.innerHTML = '';  // Limpiar el contenedor antes de agregar los usuarios
+      usuarios = await response.json();
 
+      console.log('Usuarios obtenidos:', usuarios);
+
+      // Si el rol es Staff, solo mostrar su propio usuario filtrando por nombre
+      if (userRole === 'Staff') {
+        usuarios = usuarios.filter(usuario => usuario.nombreUsuario === userName);  // Filtrar por nombre
+        console.log('Usuarios filtrados para Staff:', usuarios);
+      }
+
+      // Renderizar usuarios
+      renderizarUsuarios(usuarios);
+    } catch (error) {
+      console.error('Error al obtener los usuarios:', error);
+    }
+  }
+
+  // Función para renderizar usuarios en el contenedor
+  function renderizarUsuarios(usuarios) {
+    const userListContainer = document.getElementById('userListContainer');
+    userListContainer.innerHTML = '';  // Limpiar el contenedor antes de agregar los usuarios
+
+    if (usuarios.length === 0) {
+      userListContainer.innerHTML = '<p>No se encontraron usuarios.</p>';
+    } else {
       usuarios.forEach(usuario => {
         const userItem = document.createElement('div');
         userItem.classList.add('service-item');  // Usamos 'service-item' para mantener el mismo estilo
@@ -91,11 +126,12 @@ document.getElementById('usersBtn').addEventListener('click', async function() {
           <p>Puesto: ${usuario.puesto || 'No especificado'}</p>
           <p>Fecha de Registro: ${fechaFormateada}</p>
           <div class="service-actions">
-            <i class="fas fa-edit" data-id="${usuario.idMySQL}"></i>
-            <i class="fas fa-trash" data-id="${usuario.idMySQL}"></i>
+            <i class="fas fa-edit" data-id="${usuario._id}"></i>
+            <i class="fas fa-trash" data-id="${usuario._id}"></i>
           </div>
         `;
 
+        // Manejar eventos de eliminación y edición
         userItem.querySelector('.fa-trash').addEventListener('click', async function() {
           const userId = this.getAttribute('data-id');
           if (confirm('¿Estás seguro de que quieres eliminar este usuario?')) {
@@ -105,7 +141,9 @@ document.getElementById('usersBtn').addEventListener('click', async function() {
               });
 
               if (deleteResponse.ok) {
-                obtenerUsuarios();  // Refrescar la lista de usuarios después de eliminar
+                alert('Usuario eliminado');
+                localStorage.clear();  // Limpiar el localStorage
+                window.location.href = '/login';  // Redirigir a la pantalla de login
               } else {
                 console.error('Error al eliminar el usuario:', await deleteResponse.json());
               }
@@ -130,28 +168,27 @@ document.getElementById('usersBtn').addEventListener('click', async function() {
           document.getElementById('userContact').value = infoContacto;
           document.getElementById('userPosition').value = puesto;
 
-          if (rol == 'Admin') {
+          if (rol === 'Admin' && userRole === 'Admin') {
             document.getElementById('adminRoleBtn').classList.add('selected');
             document.getElementById('staffRoleBtn').classList.remove('selected');
-          } else if (rol == 'Staff') {
+          } else if (rol === 'Staff') {
             document.getElementById('staffRoleBtn').classList.add('selected');
             document.getElementById('adminRoleBtn').classList.remove('selected');
           }
 
           document.getElementById('formTitle').textContent = 'Editar Usuario';
           document.getElementById('submitButton').textContent = 'Actualizar Usuario';
+          document.getElementById('submitButton').disabled = false;  // Habilitar edición solo en este caso
           isEdit = true;
           editUserId = userId;
         });
 
         userListContainer.appendChild(userItem);
       });
-    } catch (error) {
-      console.error('Error al obtener los usuarios:', error);
     }
   }
 
-  obtenerUsuarios();
+  obtenerUsuarios();  // Cargar usuarios
 
   // Función para manejar el submit del formulario de usuario
   document.getElementById('userForm').addEventListener('submit', async function(event) {
@@ -177,6 +214,7 @@ document.getElementById('usersBtn').addEventListener('click', async function() {
         });
 
         if (response.ok) {
+          alert('Usuario actualizado');
           document.getElementById('formTitle').textContent = 'Agregar Usuario';
           document.getElementById('submitButton').textContent = 'Agregar Usuario';
           isEdit = false;
@@ -196,10 +234,11 @@ document.getElementById('usersBtn').addEventListener('click', async function() {
         });
 
         if (response.ok) {
+          alert('Usuario agregado');
           document.getElementById('userForm').reset();
           obtenerUsuarios();
         } else {
-          console.error('Error al crear el usuario:', await response.json());
+          console.error('Error al agregar el usuario:', await response.json());
         }
       }
     } catch (error) {
@@ -207,5 +246,5 @@ document.getElementById('usersBtn').addEventListener('click', async function() {
     }
   });
 
-  closeDrawer();
+  closeDrawer();  // Si hay un drawer, cerrarlo cuando se navega a esta pantalla
 });
