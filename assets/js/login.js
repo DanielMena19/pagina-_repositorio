@@ -23,15 +23,22 @@ if (document.getElementById('loginForm')) {
       const result = await response.json();
 
       if (response.ok) {
+        // Guardar el token, rol, idMySQL y nombreUsuario en el localStorage
         localStorage.setItem('token', result.token);  // Guardar token en localStorage
+        localStorage.setItem('userRole', result.usuario.rol);  // Guardar rol del usuario
+        localStorage.setItem('userId', result.usuario.idMySQL); // Guardar idMySQL del usuario
+        localStorage.setItem('userName', result.usuario.nombre);  // Guardar nombre del usuario
+
         alert('Login exitoso');
         window.location.href = '/inicio';   // Redirigir a la página de inicio
       } else {
-        document.getElementById('message').textContent = result.error || 'Error en el login';
+        // Mostrar mensaje de error específico o genérico
+        document.getElementById('message').textContent = result.error || 'Error en el login. Por favor, revisa tus credenciales.';
       }
     } catch (error) {
+      // Manejo de errores de red u otros
       console.error('Error en la solicitud:', error);
-      document.getElementById('message').textContent = 'Error en el servidor';
+      document.getElementById('message').textContent = 'Error en el servidor. Inténtalo más tarde.';
     }
   });
 }

@@ -1,4 +1,3 @@
-// Función para mostrar la pantalla de citas
 document.getElementById('appointmentsBtn').addEventListener('click', async function() {
   updateHeaderTitle('Administración de Citas'); // Cambiar el título del encabezado a "Citas"
 
@@ -41,6 +40,16 @@ document.getElementById('appointmentsBtn').addEventListener('click', async funct
 
   let selectedDate = null;
   let citas = [];
+  const userRole = localStorage.getItem('userRole');  // Obtener rol del usuario logueado
+  const currentUserName = localStorage.getItem('userName');  // Obtener el nombre del usuario logueado
+
+  console.log('Rol del usuario:', userRole);
+  console.log('Nombre del usuario logueado:', currentUserName);
+
+  // Inhabilitar el filtro de empleados si el rol del usuario es Staff
+  if (userRole === 'Staff') {
+    document.getElementById('filterEmployee').disabled = true;
+  }
 
   // Inicializar el calendario
   function initCalendar() {
@@ -51,25 +60,35 @@ document.getElementById('appointmentsBtn').addEventListener('click', async funct
       dateClick: function(info) {
         selectedDate = info.dateStr;
 
-        // Quitar el resaltado de los días anteriores seleccionados
+        // Resaltar el día seleccionado
         document.querySelectorAll('.fc-daygrid-day').forEach(dayEl => {
           dayEl.classList.remove('fc-daygrid-day-selected');
         });
-
-        // Resaltar el día seleccionado
         info.dayEl.classList.add('fc-daygrid-day-selected');
 
-        aplicarFiltros();
+        aplicarFiltros();  // Aplicar los filtros al seleccionar una fecha
       },
       events: async function(fetchInfo, successCallback, failureCallback) {
         try {
           const response = await fetch('http://localhost:3000/citas');
           citas = await response.json();
+
+          console.log('Citas obtenidas:', citas);
+
+          // Si es Staff, filtrar citas por el nombre del empleado logueado (insensible a mayúsculas)
+          if (userRole === 'Staff') {
+            citas = citas.filter(cita => 
+              cita.empleadoNombre.toLowerCase() === currentUserName.toLowerCase()
+            );
+            console.log('Citas filtradas para Staff:', citas);
+          }
+
           const calendarEvents = citas.map(cita => ({
-            title: `Cita`,
+            title: `Cita: ${cita.clienteNombre}`,
             start: cita.fecha,
             allDay: true
           }));
+
           successCallback(calendarEvents);
         } catch (error) {
           console.error('Error al cargar eventos del calendario:', error);
@@ -88,18 +107,22 @@ document.getElementById('appointmentsBtn').addEventListener('click', async funct
 
     let citasFiltradas = citas;
 
-    if (filtroEmpleado) {
+    // Filtrar por empleado (solo si es Admin)
+    if (userRole === 'Admin' && filtroEmpleado) {
       citasFiltradas = citasFiltradas.filter(cita => cita.empleadoNombre === filtroEmpleado);
     }
 
+    // Filtrar por servicio
     if (filtroServicio) {
       citasFiltradas = citasFiltradas.filter(cita => cita.servicioNombre === filtroServicio);
     }
 
+    // Filtrar por estado
     if (filtroEstado) {
       citasFiltradas = citasFiltradas.filter(cita => cita.estadoCita === filtroEstado);
     }
 
+    // Filtrar por fecha seleccionada
     if (selectedDate) {
       citasFiltradas = citasFiltradas.filter(cita => cita.fecha === selectedDate);
     }
@@ -144,11 +167,10 @@ document.getElementById('appointmentsBtn').addEventListener('click', async funct
               body: JSON.stringify({ estadoCita: nuevoEstado })
             });
             if (response.ok) {
-              // Actualizar el estado de la cita en la lista de citas sin recargar
               const citaIndex = citas.findIndex(c => c.idCita == idCita);
               if (citaIndex !== -1) {
                 citas[citaIndex].estadoCita = nuevoEstado;
-                aplicarFiltros(); // Vuelve a aplicar los filtros para reflejar el cambio
+                aplicarFiltros();  // Vuelve a aplicar los filtros para reflejar el cambio
               }
               alert('Estado de la cita actualizado');
             } else {
@@ -167,16 +189,14 @@ document.getElementById('appointmentsBtn').addEventListener('click', async funct
   // Función para obtener empleados y servicios desde la API
   async function obtenerEmpleadosYServicios() {
     try {
-      // Obtener empleados con el rol Staff
+      // Obtener empleados
       const responseEmpleados = await fetch('http://localhost:3000/usuarios');
       const empleados = await responseEmpleados.json();
 
       const selectEmpleado = document.getElementById('filterEmployee');
       selectEmpleado.innerHTML = '<option value="">Todos los empleados</option>';
 
-      const empleadosStaff = empleados.filter(empleado => empleado.rol === 'Staff');
-
-      empleadosStaff.forEach(empleado => {
+      empleados.forEach(empleado => {
         const option = document.createElement('option');
         option.value = empleado.nombreUsuario;
         option.textContent = empleado.nombreUsuario;
@@ -189,6 +209,7 @@ document.getElementById('appointmentsBtn').addEventListener('click', async funct
 
       const selectServicio = document.getElementById('filterService');
       selectServicio.innerHTML = '<option value="">Todos los servicios</option>';
+
       servicios.forEach(servicio => {
         const option = document.createElement('option');
         option.value = servicio.nombreServ;
@@ -207,7 +228,7 @@ document.getElementById('appointmentsBtn').addEventListener('click', async funct
     document.getElementById('filterService').value = '';
     document.getElementById('filterState').value = '';
     selectedDate = null;
-    mostrarCitasFiltradas(citas); // Mostrar todas las citas
+    mostrarCitasFiltradas(citas); // Mostrar todas las citas del usuario logueado
   }
 
   // Event listeners para aplicar filtros
@@ -222,7 +243,5 @@ document.getElementById('appointmentsBtn').addEventListener('click', async funct
 
   // Inicializar el calendario y obtener datos al cargar la página
   initCalendar();
-  obtenerEmpleadosYServicios();
-
-  closeDrawer();  // Cerrar el drawer después de cargar la página de citas
+  obtenerEmpleadosYServicios();  // Obtener empleados y servicios
 });
