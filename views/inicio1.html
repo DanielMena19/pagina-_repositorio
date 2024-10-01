@@ -19,29 +19,26 @@
   <!-- Drawer lateral -->
   <div id="myDrawer" class="drawer">
     <a href="javascript:void(0)" class="closebtn" onclick="closeDrawer()">&times;</a>
-    
+
     <a href="javascript:void(0)" id="homeBtn">
       <i class="bi bi-house-door drawer-icon"></i> Inicio
     </a>
-    
+
     <a href="javascript:void(0)" id="servicesBtn">
       <i class="bi bi-gear drawer-icon"></i> Servicios
     </a>
-    
+
     <a href="javascript:void(0)" id="productsBtn">
       <i class="bi bi-box-seam drawer-icon"></i> Productos
     </a>
-    
-    <a href="javascript:void(0)" id="usersBtn">
-      <i class="bi bi-people drawer-icon"></i> Usuarios
-    </a>
-    
-    <a href="javascript:void(0)" id="appointmentsBtn"> <!-- Nuevo botón para Citas -->
+
+    <a href="javascript:void(0)" id="citaBtn"> <!-- Nuevo botón para Citas -->
       <i class="bi bi-calendar3 drawer-icon"></i> Citas
     </a>
-    
-    <a href="javascript:void(0)" id="logoutBtn">
-      <i class="bi bi-box-arrow-right drawer-icon"></i> Cerrar sesión
+
+    <!-- Aquí el botón de Iniciar Sesión con enlace a /login -->
+    <a href="/login" id="loginBtn">
+      <i class="bi bi-box-arrow-in-right drawer-icon"></i> Iniciar sesión
     </a>
   </div>
 
@@ -94,13 +91,13 @@
     <p>Appointment App &copy; 2024 – Todos los derechos reservados</p>
   </footer>
 
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
   <script src="/js/main.js"></script> <!-- Archivo JavaScript -->
-  <script src="/js/servicio.js"></script> <!-- Archivo JavaScript -->
-  <script src="/js/producto.js"></script> <!-- Archivo JavaScript -->
-  <script src="/js/usuario.js"></script> <!-- Archivo JavaScript -->
+  <script src="/js/servicio_cliente.js"></script> <!-- Archivo JavaScript -->
+  <script src="/js/producto_cliente.js"></script> <!-- Archivo JavaScript -->
   <script src="/js/cita.js"></script> <!-- Archivo JavaScript -->
-  <script src="/js/cerrarSesion.js"></script> <!-- Archivo JavaScript -->
-    <script src="/js/inicio.js"></script> <!-- Archivo JavaScript -->
+  <script src="/js/inicio.js"></script> <!-- Archivo JavaScript -->
+
 </body>
 </html>

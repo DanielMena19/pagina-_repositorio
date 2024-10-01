@@ -26,7 +26,6 @@ if (document.getElementById('loginForm')) {
         // Guardar el token, rol, idMySQL y nombreUsuario en el localStorage
         localStorage.setItem('token', result.token);  // Guardar token en localStorage
         localStorage.setItem('userRole', result.usuario.rol);  // Guardar rol del usuario
-        localStorage.setItem('userId', result.usuario.idMySQL); // Guardar idMySQL del usuario
         localStorage.setItem('userName', result.usuario.nombre);  // Guardar nombre del usuario
 
         alert('Login exitoso');

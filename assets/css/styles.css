@@ -572,3 +572,96 @@ form button:hover {
   background-color: #e3f7ff;
   color: #3498db;
 }
+
+/* Estilos del nuevo carrusel */
+/* Estilos del nuevo carrusel */
+.new-carousel {
+  margin: 20px auto;
+  max-width: 600px;
+  position: relative;
+  overflow: hidden;
+}
+.new-carousel-container {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.new-carousel-slide {
+  flex: 0 0 100%;
+  max-width: 100%;
+}
+
+.new-carousel-slide img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.new-carousel-indicators {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.new-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin: 5px;
+  background-color: #bbb;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.new-dot.active {
+  background-color: #3498db;
+}
+
+/* Lista de servicios */
+.service-list {
+  flex: 1;
+  padding: 20px;
+  max-height: 500px;
+  overflow-y: scroll;
+}
+
+.service-item {
+  background-color: #ffffff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.service-item h4 {
+  color: #3498db;
+}
+
+.service-item p {
+  color: #34495e;
+  font-size: 14px;
+}
+
+/* Lista de servicios */
+.product-list {
+  flex: 1;
+  padding: 20px;
+  max-height: 500px;
+  overflow-y: scroll;
+}
+
+.product-item {
+  background-color: #ffffff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.product-item h4 {
+  color: #3498db;
+}
+
+.product-item p {
+  color: #34495e;
+  font-size: 14px;
+}

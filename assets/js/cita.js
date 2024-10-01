@@ -1,4 +1,4 @@
-document.getElementById('appointmentsBtn').addEventListener('click', async function() {
+document.getElementById('citaBtn').addEventListener('click', async function() {
   updateHeaderTitle('Administración de Citas'); // Cambiar el título del encabezado a "Citas"
 
   // Agregar el contenido dinámico para la pantalla de citas

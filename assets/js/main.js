@@ -19,7 +19,7 @@ function closeDrawer() {
 document.getElementById('menu-icon').addEventListener('click', openDrawer);
 
 // --- Función para cerrar el drawer si se hace clic fuera de él ---
-document.addEventListener('click', function(event) {
+document.addEventListener('click', function (event) {
   const drawer = document.getElementById('myDrawer');
   const isClickInside = drawer.contains(event.target);
   const isMenuIcon = document.getElementById('menu-icon').contains(event.target);
@@ -35,7 +35,7 @@ function updateHeaderTitle(title) {
   headerTitle.textContent = title;
 }
 
-// --- Función para inicializar el Carrusel ---
+// --- Función para inicializar el Carrusel original ---
 function initCarousel() {
   let currentSlide = 0;
   const slides = document.querySelectorAll('.carousel-slide');
@@ -74,7 +74,53 @@ function initCarousel() {
   showSlide(currentSlide);
 }
 
-// --- Inicializar carrusel al cargar la página ---
+//-----carrusel grande
+function initNewCarousel() {
+  let currentNewSlide = 0;
+  const newSlides = document.querySelectorAll('.new-carousel-slide');
+  const newDots = document.querySelectorAll('.new-dot');
+  const totalNewSlides = newSlides.length;
+
+  if (totalNewSlides === 0) return;
+
+  function showNewSlide(index) {
+    if (index >= totalNewSlides) {
+      currentNewSlide = 0;
+    } else if (index < 0) {
+      currentNewSlide = totalNewSlides - 1;
+    } else {
+      currentNewSlide = index;
+    }
+
+    // Asegúrate de que el cálculo de translateX esté correcto
+    const offset = currentNewSlide * -100; // Desplazar en base al 100% del contenedor
+    document.querySelector('.new-carousel-container').style.transform = `translateX(${offset}%)`;
+
+    // Actualizar los indicadores
+    newDots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === currentNewSlide);
+    });
+  }
+
+  // Auto-deslizamiento cada 3 segundos
+  setInterval(() => {
+    showNewSlide(currentNewSlide + 1);
+  }, 3000);
+
+  // Habilitar clic en los indicadores
+  newDots.forEach((dot, i) => {
+    dot.addEventListener('click', () => {
+      showNewSlide(i);
+    });
+  });
+
+  // Mostrar la primera diapositiva
+  showNewSlide(currentNewSlide);
+}
+
+// --- Inicializar carruseles al cargar la página ---
 window.addEventListener('DOMContentLoaded', () => {
-  initCarousel();
+  initNewCarousel();
+  initCarousel(); // Inicializar el carrusel original
+// Inicializar el nuevo carrusel
 });
