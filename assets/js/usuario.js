@@ -1,9 +1,9 @@
-// Función para mostrar la pantalla de usuarios
+// --- Lógica para mostrar la pantalla de usuarios ---
 document.getElementById('usersBtn').addEventListener('click', async function() {
   updateHeaderTitle('Administración de Usuarios'); // Cambiar el título del encabezado a "Usuarios"
 
   // Obtener rol y nombre del usuario logueado desde localStorage
-  const userRole = localStorage.getItem('userRole');  
+  const userRole = localStorage.getItem('userRole'); 
   const userName = localStorage.getItem('userName');  // Filtrar por nombre en lugar de id
 
   console.log('Rol del usuario:', userRole);
@@ -55,24 +55,27 @@ document.getElementById('usersBtn').addEventListener('click', async function() {
     </div>
   `;
 
-  // Cambiar el título a "Editar Usuario" si el usuario es Staff
+  // Si el usuario logueado es Staff, deshabilitamos la selección de roles
   if (userRole === 'Staff') {
-    document.getElementById('formTitle').textContent = 'Editar Usuario';
-    document.getElementById('submitButton').textContent = 'Actualizar Usuario';
-    document.getElementById('submitButton').disabled = true;  // Deshabilitar el botón al inicio
+    document.getElementById('adminRoleBtn').classList.add('disabled');
+    document.getElementById('staffRoleBtn').classList.add('disabled');
   }
 
-  // Asignar el rol seleccionado al formulario
+  // Asignar el rol seleccionado al formulario (solo si no es Staff)
   document.getElementById('adminRoleBtn').addEventListener('click', function() {
-    document.getElementById('userRole').value = 'Admin';  // Asignar rol de Admin
-    document.getElementById('adminRoleBtn').classList.add('selected');
-    document.getElementById('staffRoleBtn').classList.remove('selected');
+    if (userRole !== 'Staff') {  // Solo permitir cambiar el rol si no es Staff
+      document.getElementById('userRole').value = 'Admin';
+      document.getElementById('adminRoleBtn').classList.add('selected');
+      document.getElementById('staffRoleBtn').classList.remove('selected');
+    }
   });
 
   document.getElementById('staffRoleBtn').addEventListener('click', function() {
-    document.getElementById('userRole').value = 'Staff';  // Asignar rol de Staff
-    document.getElementById('staffRoleBtn').classList.add('selected');
-    document.getElementById('adminRoleBtn').classList.remove('selected');
+    if (userRole !== 'Staff') {  // Solo permitir cambiar el rol si no es Staff
+      document.getElementById('userRole').value = 'Staff';
+      document.getElementById('staffRoleBtn').classList.add('selected');
+      document.getElementById('adminRoleBtn').classList.remove('selected');
+    }
   });
 
   let isEdit = false;
@@ -89,7 +92,7 @@ document.getElementById('usersBtn').addEventListener('click', async function() {
 
       // Si el rol es Staff, solo mostrar su propio usuario filtrando por nombre
       if (userRole === 'Staff') {
-        usuarios = usuarios.filter(usuario => usuario.nombreUsuario === userName);  // Filtrar por nombre
+        usuarios = usuarios.filter(usuario => usuario.nombreUsuario === userName);
         console.log('Usuarios filtrados para Staff:', usuarios);
       }
 
@@ -126,8 +129,8 @@ document.getElementById('usersBtn').addEventListener('click', async function() {
           <p>Puesto: ${usuario.puesto || 'No especificado'}</p>
           <p>Fecha de Registro: ${fechaFormateada}</p>
           <div class="service-actions">
-            <i class="fas fa-edit" data-id="${usuario._id}"></i>
-            <i class="fas fa-trash" data-id="${usuario._id}"></i>
+            <i class="fas fa-edit" data-id="${usuario.idMySQL}"></i>
+            <i class="fas fa-trash" data-id="${usuario.idMySQL}"></i>
           </div>
         `;
 
@@ -142,8 +145,7 @@ document.getElementById('usersBtn').addEventListener('click', async function() {
 
               if (deleteResponse.ok) {
                 alert('Usuario eliminado');
-                localStorage.clear();  // Limpiar el localStorage
-                window.location.href = '/login';  // Redirigir a la pantalla de login
+                obtenerUsuarios();  // Refrescar la lista de usuarios después de eliminar
               } else {
                 console.error('Error al eliminar el usuario:', await deleteResponse.json());
               }
@@ -181,6 +183,9 @@ document.getElementById('usersBtn').addEventListener('click', async function() {
           document.getElementById('submitButton').disabled = false;  // Habilitar edición solo en este caso
           isEdit = true;
           editUserId = userId;
+
+          // Eliminar el atributo required del campo contraseña al editar
+          document.getElementById('userPassword').removeAttribute('required');
         });
 
         userListContainer.appendChild(userItem);
@@ -194,14 +199,31 @@ document.getElementById('usersBtn').addEventListener('click', async function() {
   document.getElementById('userForm').addEventListener('submit', async function(event) {
     event.preventDefault();
 
+    // Recolectar los valores del formulario
     const nuevoUsuario = {
       nombreUsuario: document.getElementById('userName').value,
       correo: document.getElementById('userEmail').value,
-      contrasena: document.getElementById('userPassword').value,
       rol: document.getElementById('userRole').value,
       infoContacto: document.getElementById('userContact').value,
       puesto: document.getElementById('userPosition').value,
     };
+
+    // Obtener el campo de la contraseña
+    const passwordField = document.getElementById('userPassword');
+    
+    // Si estamos en modo de edición, quitar el atributo "required" del campo de contraseña
+    if (isEdit) {
+      passwordField.removeAttribute('required');
+    } else {
+      // Si estamos agregando un nuevo usuario, asegurarnos de que la contraseña sea requerida
+      passwordField.setAttribute('required', true);
+    }
+
+    // Solo agregar la contraseña si el campo no está vacío
+    const contrasena = passwordField.value;
+    if (contrasena) {
+      nuevoUsuario.contrasena = contrasena;  // Solo se incluye si hay un valor en el campo
+    }
 
     try {
       if (isEdit) {

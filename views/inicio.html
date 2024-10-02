@@ -9,15 +9,50 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css"> <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet">
 
-  <!-- Verificación del inicio de sesión -->
+  <!-- Verificación del inicio de sesión y expiración del token -->
   <script>
-    // Verificar si hay un token en localStorage
-    const token = localStorage.getItem('token');
-    if (!token) {
-      // Si no hay token, redirigir al login
-      alert('Por favor inicia sesión para acceder.');
-      window.location.href = '/login';  // Redirigir al login
+    // Función para verificar si el token ha expirado
+    function verificarExpiracionToken() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        window.location.href = '/login';  // Redirigir si no hay token
+        return;
+      }
+
+      // Decodificar el token y verificar la expiración
+      const parseJwt = (token) => {
+        try {
+          const base64Url = token.split('.')[1];
+          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+          const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+          }).join(''));
+          return JSON.parse(jsonPayload);
+        } catch (error) {
+          return null;
+        }
+      };
+
+      const tokenData = parseJwt(token);
+      if (tokenData) {
+        const currentTime = Math.floor(Date.now() / 1000);  // Tiempo actual en segundos
+        const tokenExpirationTime = tokenData.exp;
+
+        if (currentTime >= tokenExpirationTime) {
+          alert('Tu sesión ha expirado. Por favor, inicia sesión de nuevo.');
+          localStorage.removeItem('token');  // Eliminar el token expirado
+          window.location.href = '/login';  // Redirigir al login
+        }
+      } else {
+        // Si no se puede decodificar el token correctamente
+        alert('Token inválido. Por favor, inicia sesión de nuevo.');
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+      }
     }
+
+    // Ejecutar la verificación cada cierto tiempo para comprobar la expiración
+    setInterval(verificarExpiracionToken, 10000);  // Verificar cada 10 segundos
   </script>
 </head>
 <body>
@@ -112,6 +147,6 @@
   <script src="/js/usuario.js"></script> <!-- Archivo JavaScript -->
   <script src="/js/cita.js"></script> <!-- Archivo JavaScript -->
   <script src="/js/cerrarSesion.js"></script> <!-- Archivo JavaScript -->
-    <script src="/js/inicio.js"></script> <!-- Archivo JavaScript -->
+  <script src="/js/inicio.js"></script> <!-- Archivo JavaScript -->
 </body>
 </html>
