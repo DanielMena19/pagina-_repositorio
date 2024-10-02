@@ -1,7 +1,6 @@
-document.getElementById('citaBtn').addEventListener('click', async function() {
+document.getElementById('citaBtn').addEventListener('click', async function () {
   updateHeaderTitle('Administración de Citas'); // Cambiar el título del encabezado a "Citas"
 
-  // Agregar el contenido dinámico para la pantalla de citas
   document.getElementById('dynamic-content').innerHTML = `
     <div class="services-container">
       <div class="calendar-container">
@@ -57,7 +56,7 @@ document.getElementById('citaBtn').addEventListener('click', async function() {
     const calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'dayGridMonth',
       locale: 'es',
-      dateClick: function(info) {
+      dateClick: function (info) {
         selectedDate = info.dateStr;
 
         // Resaltar el día seleccionado
@@ -68,7 +67,7 @@ document.getElementById('citaBtn').addEventListener('click', async function() {
 
         aplicarFiltros();  // Aplicar los filtros al seleccionar una fecha
       },
-      events: async function(fetchInfo, successCallback, failureCallback) {
+      events: async function (fetchInfo, successCallback, failureCallback) {
         try {
           const response = await fetch('http://localhost:3000/citas');
           citas = await response.json();
@@ -77,7 +76,7 @@ document.getElementById('citaBtn').addEventListener('click', async function() {
 
           // Si es Staff, filtrar citas por el nombre del empleado logueado (insensible a mayúsculas)
           if (userRole === 'Staff') {
-            citas = citas.filter(cita => 
+            citas = citas.filter(cita =>
               cita.empleadoNombre.toLowerCase() === currentUserName.toLowerCase()
             );
             console.log('Citas filtradas para Staff:', citas);
@@ -142,42 +141,73 @@ document.getElementById('citaBtn').addEventListener('click', async function() {
         const citaItem = document.createElement('div');
         citaItem.classList.add('service-item');
 
+        // Determinar la clase de estado basada en el estado actual
+        let estadoClass = '';
+        if (cita.estadoCita === 'pendiente') {
+          estadoClass = 'estado-pendiente';
+        } else if (cita.estadoCita === 'confirmada') {
+          estadoClass = 'estado-confirmada';
+        } else if (cita.estadoCita === 'cancelada') {
+          estadoClass = 'estado-cancelada';
+        }
+
         citaItem.innerHTML = `
-          <h4>${cita.clienteNombre} - ${cita.servicioNombre}</h4>
-          <p>Empleado: ${cita.empleadoNombre}</p>
+          <h4>${capitalize(cita.clienteNombre)} - ${capitalize(cita.servicioNombre)}</h4>
+          <p>Empleado: ${cita.empleadoNombre || 'Empleado no encontrado'}</p>
+          <p>Fecha: ${cita.fecha}</p>
           <p>Hora: ${cita.hora}</p>
-          <p>Estado: 
-            <select class="estado-cita" data-id="${cita.idCita}">
-              <option value="pendiente" ${cita.estadoCita === 'pendiente' ? 'selected' : ''}>Pendiente</option>
-              <option value="confirmada" ${cita.estadoCita === 'confirmada' ? 'selected' : ''}>Confirmada</option>
-              <option value="cancelada" ${cita.estadoCita === 'cancelada' ? 'selected' : ''}>Cancelada</option>
-            </select>
-          </p>
+          <p class="${estadoClass}">Estado: ${capitalize(cita.estadoCita)}</p>
+          <div class="service-actions">
+            <i class="fas fa-ban" data-id="${cita.idCita}" title="Cancelar"></i>
+            <i class="fas fa-check" data-id="${cita.idCita}" title="Confirmar"></i>
+          </div>
         `;
 
-        // Event listener para cambiar el estado de la cita
-        citaItem.querySelector('.estado-cita').addEventListener('change', async function() {
-          const idCita = this.getAttribute('data-id');
-          const nuevoEstado = this.value;
+        // Evento para cancelar la cita (cambia el estado a 'cancelada')
+        citaItem.querySelector('.fa-ban').addEventListener('click', async function () {
+          const citaId = this.getAttribute('data-id');
+          if (confirm('¿Estás seguro de que quieres cancelar esta cita?')) {
+            try {
+              const response = await fetch(`http://localhost:3000/citas/${citaId}`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ estadoCita: 'cancelada' })  // Cambiar el estado a 'cancelada'
+              });
 
-          try {
-            const response = await fetch(`http://localhost:3000/citas/${idCita}`, {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ estadoCita: nuevoEstado })
-            });
-            if (response.ok) {
-              const citaIndex = citas.findIndex(c => c.idCita == idCita);
-              if (citaIndex !== -1) {
-                citas[citaIndex].estadoCita = nuevoEstado;
-                aplicarFiltros();  // Vuelve a aplicar los filtros para reflejar el cambio
+              if (response.ok) {
+                await obtenerCitas();  // Refrescar la lista de citas después de cambiar el estado
+              } else {
+                console.error('Error al cancelar la cita:', await response.json());
               }
-              alert('Estado de la cita actualizado');
-            } else {
-              console.error('Error al actualizar el estado de la cita:', await response.json());
+            } catch (error) {
+              console.error('Error en la solicitud:', error);
             }
-          } catch (error) {
-            console.error('Error en la solicitud:', error);
+          }
+        });
+
+        // Evento para confirmar la cita (cambia el estado a 'confirmada')
+        citaItem.querySelector('.fa-check').addEventListener('click', async function () {
+          const citaId = this.getAttribute('data-id');
+          if (confirm('¿Estás seguro de que quieres confirmar esta cita?')) {
+            try {
+              const response = await fetch(`http://localhost:3000/citas/${citaId}`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ estadoCita: 'confirmada' })  // Cambiar el estado a 'confirmada'
+              });
+
+              if (response.ok) {
+                await obtenerCitas();  // Refrescar la lista de citas después de cambiar el estado
+              } else {
+                console.error('Error al confirmar la cita:', await response.json());
+              }
+            } catch (error) {
+              console.error('Error en la solicitud:', error);
+            }
           }
         });
 
@@ -196,7 +226,10 @@ document.getElementById('citaBtn').addEventListener('click', async function() {
       const selectEmpleado = document.getElementById('filterEmployee');
       selectEmpleado.innerHTML = '<option value="">Todos los empleados</option>';
 
-      empleados.forEach(empleado => {
+      // Filtrar solo empleados con rol 'Staff'
+      const empleadosStaff = empleados.filter(empleado => empleado.rol === 'Staff');
+
+      empleadosStaff.forEach(empleado => {
         const option = document.createElement('option');
         option.value = empleado.nombreUsuario;
         option.textContent = empleado.nombreUsuario;
@@ -237,11 +270,29 @@ document.getElementById('citaBtn').addEventListener('click', async function() {
   document.getElementById('filterState').addEventListener('change', aplicarFiltros);
 
   // Botón para mostrar todas las citas y restablecer los filtros
-  document.getElementById('mostrarTodasCitas').addEventListener('click', function() {
+  document.getElementById('mostrarTodasCitas').addEventListener('click', function () {
     resetearFiltros();
   });
 
   // Inicializar el calendario y obtener datos al cargar la página
   initCalendar();
   obtenerEmpleadosYServicios();  // Obtener empleados y servicios
+
+  // Función para obtener citas y mostrarlas
+  async function obtenerCitas() {
+    try {
+      const response = await fetch('http://localhost:3000/citas');
+      citas = await response.json();
+      aplicarFiltros();
+    } catch (error) {
+      console.error('Error al obtener las citas:', error);
+    }
+  }
+
+  // Función para capitalizar las palabras
+  function capitalize(str) {
+    return str.replace(/\b\w/g, l => l.toUpperCase());
+  }
+
+  obtenerCitas();
 });
