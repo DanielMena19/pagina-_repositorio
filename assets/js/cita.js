@@ -74,10 +74,10 @@ document.getElementById('citaBtn').addEventListener('click', async function () {
 
           console.log('Citas obtenidas:', citas);
 
-          // Si es Staff, filtrar citas por el nombre del empleado logueado (insensible a mayúsculas)
+          // Si es Staff, filtrar citas por el nombre del empleado logueado (insensible a mayúsculas y espacios)
           if (userRole === 'Staff') {
             citas = citas.filter(cita =>
-              cita.empleadoNombre.toLowerCase() === currentUserName.toLowerCase()
+              cita.empleadoNombre.trim().toLowerCase() === currentUserName.trim().toLowerCase()
             );
             console.log('Citas filtradas para Staff:', citas);
           }
@@ -106,8 +106,13 @@ document.getElementById('citaBtn').addEventListener('click', async function () {
 
     let citasFiltradas = citas;
 
-    // Filtrar por empleado (solo si es Admin)
-    if (userRole === 'Admin' && filtroEmpleado) {
+    // *** Filtrar siempre por empleado si es Staff ***
+    if (userRole === 'Staff') {
+      citasFiltradas = citas.filter(cita =>
+        cita.empleadoNombre.trim().toLowerCase() === currentUserName.trim().toLowerCase()
+      );
+    } else if (userRole === 'Admin' && filtroEmpleado) {
+      // Filtrar por empleado solo si es Admin
       citasFiltradas = citasFiltradas.filter(cita => cita.empleadoNombre === filtroEmpleado);
     }
 
@@ -261,7 +266,7 @@ document.getElementById('citaBtn').addEventListener('click', async function () {
     document.getElementById('filterService').value = '';
     document.getElementById('filterState').value = '';
     selectedDate = null;
-    mostrarCitasFiltradas(citas); // Mostrar todas las citas del usuario logueado
+    aplicarFiltros(); // Restablecer los filtros, aplicando el de Staff si es necesario
   }
 
   // Event listeners para aplicar filtros
@@ -283,6 +288,14 @@ document.getElementById('citaBtn').addEventListener('click', async function () {
     try {
       const response = await fetch('http://localhost:3000/citas');
       citas = await response.json();
+
+      // Si es Staff, aplicar el filtro por defecto al cargar las citas
+      if (userRole === 'Staff') {
+        citas = citas.filter(cita =>
+          cita.empleadoNombre.trim().toLowerCase() === currentUserName.trim().toLowerCase()
+        );
+      }
+
       aplicarFiltros();
     } catch (error) {
       console.error('Error al obtener las citas:', error);
